@@ -15,53 +15,52 @@ function renderSass(data, options) {
   });
 }
 
+function resolveDependencies(file, dependencies) {
+  return file.buffer.toString('utf-8').replace(/@import(?:.+?)["|'](.*)["|']/g, function(match, name) {
+    if (name in dependencies) {
+      // check if name is found in pattern dependencies
+      let dependency = dependencies[name];
+      return resolveDependencies(dependency, dependency.dependencies);
+    } else if (name.indexOf('npm://') === 0) {
+      // special case `npm://`, for npm dependencies
+      try {
+        return match.replace(name, require.resolve(name.split('npm://')[1]));
+      } catch (err) {
+        application.log.error(`Could not resolve npm dependency: ${name}`);
+      }
+    }
+
+    throw new Error(`Unknown dependency found in ${file.path}: ${name}`);
+  }) || buffer;
+}
+
 export default function(application) {
   return async function(file, demo, configuration) {
-    // file.buffer
-    // file.source
-    // file.demoBuffer
-    // file.demoSource
-    let fileDependencies = file.dependencies;
+    // resolve file dependencies
+    let fileResolved = resolveDependencies(file, file.dependencies);
 
-    let rendered = await renderSass(file.buffer.toString('utf-8'), {
-      indentedSyntax: true,
-      includePaths: [dirname(demo.path)]
+    // render file
+    let rendered = await renderSass(fileResolved, {
+      indentedSyntax: true
     });
 
-    file.rendered = rendered.css;
-
     if (demo) {
-      // resolve dependencies
-      let demoBuffer = demo.buffer.toString('utf-8');
+      // resolve demo dependencies
+      let demoDependencies = {...file.dependencies, Pattern: file}
+      let demoResolved = resolveDependencies(demo, demoDependencies);
 
-      let demoResolved = demoBuffer.replace(/@import(?:.+?)["|'](.*)["|']/g, function(match, name) {
-        if (name === 'Pattern') {
-          // special case `Pattern`, just for demo
-          return match.replace(name, './index.sass');
-        } else if (name in fileDependencies) {
-          // check if name is found in pattern dependencies
-          let dependency = fileDependencies[name];
-          return match.replace(name, dependency.path);
-        } else if (name.indexOf('npm://') === 0) {
-          // special case `npm://`, for npm dependencies
-          try {
-            return match.replace(name, require.resolve(name.split('npm://')[1]));
-          } catch (err) {
-            application.log.error(`Could not resolve npm dependency: ${name}`);
-          }
-        }
-
-        throw new Error(`Unknown dependency found in ${demo.path}: ${name}`);
-      }) || buffer;
-
+      // render demo
       let renderedDemo = await renderSass(demoResolved, {
-        indentedSyntax: true,
-        includePaths: [dirname(demo.path)]
+        indentedSyntax: true
       });
+
+      // return results
       file.demoBuffer = renderedDemo.css;
       file.demoSource = demo.source;
     }
 
+    // jump through patternplate's hoops
+    file.buffer = rendered.css;
     file.in = configuration.inFormat;
     file.out = configuration.outFormat;
 
