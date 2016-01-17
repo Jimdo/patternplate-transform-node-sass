@@ -3,7 +3,7 @@ export default {
     inFormat: 'sass',
     outFormat: 'css',
     opts: {
-      
+      indentedSyntax: true
     }
   }
-}
+};

@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "patternplate",
-    "prebuild": "rm -rf application",
-    "build": "babel --presets es2015,stage-0 --plugins add-module-exports source --out-dir .",
+    "clean": "rm -rf application",
+    "prebuild": "npm test && npm run clean",
+    "build": "babel --presets es2015-generators-async,stage-0 --plugins add-module-exports source --out-dir .",
+    "test": "eslint source/**/*.js",
     "watch": "watch 'npm run build' source"
   },
   "author": "",
@@ -17,9 +19,13 @@
   },
   "devDependencies": {
     "babel-cli": "^6.4.0",
+    "babel-eslint": "^4.1.6",
     "babel-plugin-add-module-exports": "^0.1.2",
-    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-es2015-generators-async": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
+    "eslint": "^1.10.3",
+    "eslint-config-xo-space": "^0.8.0",
+    "eslint-plugin-babel": "^3.0.0",
     "node-sass": "^3.4.2",
     "watch": "^0.17.1"
   },
