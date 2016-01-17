@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "flexiblegs-sass": "^5.5.1",
     "patternplate": "^0.14.3"
   },
   "devDependencies": {

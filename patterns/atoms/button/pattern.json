@@ -1,4 +1,7 @@
 {
     "name": "button",
-    "version": "0.0.1"
+    "version": "0.0.1",
+    "patterns": {
+      "color": "globals/color"
+    }
 }
