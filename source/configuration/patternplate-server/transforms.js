@@ -5,5 +5,9 @@ export default {
     opts: {
       indentedSyntax: true
     }
+  },
+  scss: {
+    inFormat: 'scss',
+    outFormat: 'css'
   }
 };
