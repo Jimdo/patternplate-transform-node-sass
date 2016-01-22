@@ -7,7 +7,7 @@ export default {
     },
     scss: {
       name: 'Style',
-      transforms: ['sass'],
+      transforms: ['scss'],
       build: true
     }
   }
