@@ -4,6 +4,11 @@ export default {
       name: 'Style',
       transforms: ['sass'],
       build: true
+    },
+    scss: {
+      name: 'Style',
+      transforms: ['scss'],
+      build: true
     }
   }
 };

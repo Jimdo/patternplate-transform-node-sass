@@ -1,0 +1,7 @@
+{
+    "name": "button_scss",
+    "version": "0.0.1",
+    "patterns": {
+      "color": "globals/color_scss"
+    }
+}
