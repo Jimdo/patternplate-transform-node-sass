@@ -1,3 +1,3 @@
-# patternplate-transform-node-sass
+# [DEPRECATED] patternplate-transform-node-sass
 
-Plugin to enable writing sass instead of less in Patternplate projects.
+This plugin is deprecated. For a patternplate sass transform please go to: https://github.com/marionebl/patternplate-transform-node-sass
